@@ -8,7 +8,7 @@ import (
 )
 
 const (
-	WatchRetry = 5
+	WatchRetry = 250
 )
 
 // A Listener waits for etcd key changes and sends watch events to its eventss.
@@ -66,11 +66,11 @@ func (w *Listener) Start(events []chan string) {
 				break Loop
 			} else {
 				w.logger.Error("watch on '%s' failed: %s", key, err)
-				w.logger.Info("retrying in %ds", WatchRetry)
+				w.logger.Info("retrying in %dms", WatchRetry)
 				select {
 				case <-w.stop:
 					break Loop
-				case <-time.After(WatchRetry * time.Second):
+				case <-time.After(WatchRetry * time.Millisecond):
 				}
 			}
 		}
